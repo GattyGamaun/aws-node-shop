@@ -11,7 +11,7 @@
 #
 # Happy Coding!
 
-service: services
+service: product-service
 # app and org for use with dashboard.serverless.com
 #app: your-app-name
 #org: your-org-name
@@ -31,8 +31,8 @@ provider:
     cors: true
 
 # you can add statements to the Lambda function's IAM Role here
-#  iam:
-#    role:
+  iam:
+    role: arn:aws:iam::782876982008:role/DynamoDBLambdaAccessRole
 #      statements:
 #        - Effect: "Allow"
 #          Action:
@@ -49,8 +49,9 @@ provider:
 #                - "/*"
 
 # you can define service wide environment variables here
-#  environment:
-#    variable1: value1
+  environment:
+    TABLE_PRODUCTS: products
+    TABLE_STOCKS: stocks
 
 # you can add packaging information here
 #package:
