@@ -1,18 +1,14 @@
 import { getProductsList } from "./get-products-list.js";
 
-const getItem = async (event) => {
-  const { title } = event.pathParameters;
+export const getProductsById = async (event, context, callback) => {
+  const { id } = event.pathParameters;
   const products = await getProductsList();
-  const product = products.find((product) => product.title === title);
+  const product = products.find((product) => product.id === id);
   if (!product) {
-    return {
+    callback(null, {
       statusCode: 404,
-      body: { message: "Product with this title is not found" },
-    };
+      body: { message: "Product with this id is not found" },
+    });
   }
   return product;
-};
-
-export const getProductsById = async (event) => {
-  return await getItem(event);
 };

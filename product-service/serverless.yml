@@ -109,9 +109,15 @@ functions:
     handler: handler.getProductsById
     events:
       - httpApi:
-          path: /products/{title}
+          path: /products/{id}
           method: get
 
+  createProduct:
+    handler: handler.createProduct
+    events:
+      - httpApi:
+          path: /products
+          method: post
 
 # you can add CloudFormation resource templates here
 #resources:
