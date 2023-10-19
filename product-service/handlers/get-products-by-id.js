@@ -7,8 +7,8 @@ export const getProductsById = async (event, context, callback) => {
   if (!product) {
     callback(null, {
       statusCode: 404,
-      body: { message: "Product with this id is not found" },
+      body: { message: "Product with this id is not found" }
     });
   }
-  return product;
+  return JSON.stringify(product);
 };
