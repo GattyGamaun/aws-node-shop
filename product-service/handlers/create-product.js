@@ -25,6 +25,7 @@ const writeCount = async (item) => {
 
 export const createProduct = async (event, context, callback) => {
   const body = JSON.parse(event.body);
+  console.log(body);
 
   if (!body || !body.title || !body.description || !body.price || !body.count) {
     callback(null, {
