@@ -1,11 +1,10 @@
 {
   "compilerOptions": {
-    "lib": ["es2020"],
-    "module": "ES2022",
-    "removeComments": true,
+    "allowJs": true,
+    "target": "es2022",
+    "outDir": ".build",
     "moduleResolution": "node",
-    "target": "es2022"
-  },
-  "include": ["src/**/*"],
-  "exclude": ["**/*.spec.ts"]
+    "lib": ["es2022"],
+    "rootDir": "./"
+  }
 }
