@@ -27,7 +27,7 @@ export const createProduct = async (event, context, callback) => {
   const body = JSON.parse(event.body);
   console.log(body);
 
-  if (!body || !body.title || !body.description || !body.price || !body.count) {
+  if (!body?.title || !body?.description || !body?.price || !body?.count) {
     callback(null, {
       statusCode: 400,
       message: "Please provide title, description, count and price"
