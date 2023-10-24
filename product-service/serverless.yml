@@ -11,7 +11,7 @@
 #
 # Happy Coding!
 
-service: services
+service: product-service
 # app and org for use with dashboard.serverless.com
 #app: your-app-name
 #org: your-org-name
@@ -31,8 +31,8 @@ provider:
     cors: true
 
 # you can add statements to the Lambda function's IAM Role here
-#  iam:
-#    role:
+  iam:
+    role: arn:aws:iam::782876982008:role/DynamoDBLambdaAccessRole
 #      statements:
 #        - Effect: "Allow"
 #          Action:
@@ -49,8 +49,9 @@ provider:
 #                - "/*"
 
 # you can define service wide environment variables here
-#  environment:
-#    variable1: value1
+  environment:
+    TABLE_PRODUCTS: products
+    TABLE_STOCKS: stocks
 
 # you can add packaging information here
 #package:
@@ -63,63 +64,54 @@ provider:
 functions:
   getProductsList:
     handler: handler.getProductsList
-#    The following are a few example events you can configure
-#    NOTE: Please make sure to change your handler code to work with those events
-#    Check the event documentation for details
     events:
       - httpApi:
           path: /products
           method: get
 
-#      - websocket: $connect
-#      - s3: ${env:BUCKET}
-#      - schedule: rate(10 minutes)
-#      - sns: greeter-topic
-#      - stream: arn:aws:dynamodb:region:XXXXXX:table/foo/stream/1970-01-01T00:00:00.000
-#      - alexaSkill: amzn1.ask.skill.xx-xx-xx-xx
-#      - alexaSmartHome: amzn1.ask.skill.xx-xx-xx-xx
-#      - iot:
-#          sql: "SELECT * FROM 'some_topic'"
-#      - cloudwatchEvent:
-#          event:
-#            source:
-#              - "aws.ec2"
-#            detail-type:
-#              - "EC2 Instance State-change Notification"
-#            detail:
-#              state:
-#                - pending
-#      - cloudwatchLog: '/aws/lambda/hello'
-#      - cognitoUserPool:
-#          pool: MyUserPool
-#          trigger: PreSignUp
-#      - alb:
-#          listenerArn: arn:aws:elasticloadbalancing:us-east-1:XXXXXX:listener/app/my-load-balancer/50dc6c495c0c9188/
-#          priority: 1
-#          conditions:
-#            host: example.com
-#            path: /hello
-
-#    Define function environment variables here
-#    environment:
-#      variable2: value2
-
   getProductsById:
     handler: handler.getProductsById
     events:
       - httpApi:
-          path: /products/{title}
+          path: /products/{id}
           method: get
 
+  createProduct:
+    handler: handler.createProduct
+    events:
+      - httpApi:
+          path: /products
+          method: post
 
 # you can add CloudFormation resource templates here
-#resources:
-#  Resources:
-#    NewResource:
-#      Type: AWS::S3::Bucket
-#      Properties:
-#        BucketName: my-new-bucket
-#  Outputs:
-#     NewOutput:
-#       Description: "Description for the output"
-#       Value: "Some output value"
+resources:
+  Resources:
+    products:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: products
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+
+    stocks:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: stocks
+        AttributeDefinitions:
+          - AttributeName: product_id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: product_id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+
+
