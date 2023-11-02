@@ -83,6 +83,12 @@ functions:
           path: /products
           method: post
 
+  catalogBatchProcess:
+    handler: handler.catalogBatchProcess
+    events:
+      - sqs:
+          arn: arn:aws:sqs:eu-north-1:782876982008:catalogItemsQueue
+          batchSize: 5
 # you can add CloudFormation resource templates here
 resources:
   Resources:
@@ -115,3 +121,7 @@ resources:
           WriteCapacityUnits: 5
 
 
+    catalogItemsQueue:
+      Type: "AWS::SQS::Queue"
+      Properties:
+        QueueName: "catalogItemsQueue"
