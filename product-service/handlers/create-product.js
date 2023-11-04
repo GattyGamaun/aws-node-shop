@@ -50,15 +50,15 @@ export const createProduct = async (event) => {
 
     return {
       statusCode: 200,
-      message: {
+      body: JSON.stringify({
         ...product,
         count: count
-      }
+      })
     };
   } else {
     return {
       statusCode: 400,
-      message: 'Please provide title, description, count and price'
+      body: 'Please provide title, description, count and price'
     };
   }
 };

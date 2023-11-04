@@ -9,8 +9,8 @@ export async function catalogBatchProcess(event) {
   const { body } = event.Records[0];
 
   console.log('body', body);
-  const res = await createProduct(JSON.parse(body));
-  console.log('res', res);
+  await createProduct(JSON.parse(body));
+
   return {
     statusCode: 200,
     body: 'catalogBatchProcess'

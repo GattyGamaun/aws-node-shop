@@ -87,8 +87,10 @@ functions:
     handler: handler.catalogBatchProcess
     events:
       - sqs:
-          arn: arn:aws:sqs:eu-north-1:782876982008:catalogItemsQueue
+          arn: arn:aws:sqs:eu-west-3:782876982008:catalogItemsQueue
           batchSize: 5
+          maximumBatchingWindow: 10
+
 # you can add CloudFormation resource templates here
 resources:
   Resources:
