@@ -39,7 +39,6 @@ provider:
             - "s3:*"
           Resource: "arn:aws:s3:::import-service-gatty/*"
 
-
 # you can define service wide environment variables here
 #  environment:
 #    variable1: value1

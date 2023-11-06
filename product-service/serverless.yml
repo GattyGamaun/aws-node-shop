@@ -32,12 +32,23 @@ provider:
 
 # you can add statements to the Lambda function's IAM Role here
   iam:
-    role: arn:aws:iam::782876982008:role/DynamoDBLambdaAccessRole
-#      statements:
-#        - Effect: "Allow"
-#          Action:
-#            - "s3:ListBucket"
-#          Resource: { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "ServerlessDeploymentBucket" } ] ]  }
+    role:
+      statements:
+        - Effect: "Allow"
+          Action:
+            - "dynamodb:*"
+          Resource:
+            - arn:aws:dynamodb:eu-north-1:782876982008:table/stocks
+            - arn:aws:dynamodb:eu-north-1:782876982008:table/products
+        - Effect: Allow
+          Action:
+            - "sqs:*"
+          Resource:
+            Fn::GetAtt:
+              - catalogItemsQueue
+              - Arn
+
+
 #        - Effect: "Allow"
 #          Action:
 #            - "s3:PutObject"
@@ -52,6 +63,8 @@ provider:
   environment:
     TABLE_PRODUCTS: products
     TABLE_STOCKS: stocks
+    SQS_URL:
+      Ref: catalogItemsQueue
 
 # you can add packaging information here
 #package:
@@ -87,7 +100,10 @@ functions:
     handler: handler.catalogBatchProcess
     events:
       - sqs:
-          arn: arn:aws:sqs:eu-west-3:782876982008:catalogItemsQueue
+          arn:
+            Fn::GetAtt:
+              - catalogItemsQueue
+              - Arn
           batchSize: 5
           maximumBatchingWindow: 10
 

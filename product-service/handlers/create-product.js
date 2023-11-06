@@ -2,7 +2,7 @@ import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocumentClient, PutCommand } from '@aws-sdk/lib-dynamodb';
 import { v4 as uuidv4 } from 'uuid';
 
-const client = new DynamoDBClient({ region: 'eu-west-3' });
+const client = new DynamoDBClient({ region: 'eu-north-1' });
 const docClient = DynamoDBDocumentClient.from(client);
 
 const writeProduct = async (item) => {
@@ -45,16 +45,25 @@ export const createProduct = async (event) => {
       product_id: id,
       count: count
     };
-    await writeProduct(product);
-    await writeCount(countTable);
+    try {
+      await writeProduct(product);
+      await writeCount(countTable);
 
-    return {
-      statusCode: 200,
-      body: JSON.stringify({
-        ...product,
-        count: count
-      })
-    };
+      return {
+        statusCode: 201,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Credentials': true,
+          'Access-Control-Allow-Headers': 'Authorization'
+        },
+        body: JSON.stringify({
+          id
+        })
+      };
+    } catch (error) {
+      console.log(error);
+      return new Error(error.message);
+    }
   } else {
     return {
       statusCode: 400,

@@ -4,15 +4,19 @@ export async function catalogBatchProcess(event) {
   if (!event)
     return {
       statusCode: 400,
-      body: 'Products is not found'
+      body: JSON.stringify('Records are not found')
     };
-  const { body } = event.Records[0];
 
-  console.log('body', body);
-  await createProduct(JSON.parse(body));
+  const products = await event.Records.map((records) => {
+    const body = JSON.parse(records.body);
+    console.log('body', body);
+    createProduct(body);
+    return body;
+  });
+
+  console.log('products', products);
 
   return {
-    statusCode: 200,
-    body: 'catalogBatchProcess'
+    statusCode: 200
   };
 }

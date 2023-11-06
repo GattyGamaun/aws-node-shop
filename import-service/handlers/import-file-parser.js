@@ -1,4 +1,5 @@
 import { GetObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import { SQSClient, SendMessageCommand } from '@aws-sdk/client-sqs';
 import csv from 'csv-parser';
 
 const client = new S3Client({ region: 'eu-north-1' });
@@ -14,13 +15,24 @@ export async function importFileParser(event) {
   const command = new GetObjectCommand(params);
   const results = [];
 
+  const sqs = new SQSClient({});
   try {
     const response = await client.send(command);
 
     response.Body.pipe(csv())
-      .on('data', (data) => results.push(data))
+      .on('data', (data) => {
+        results.push(data);
+      })
       .on('end', () => {
-        console.log('results', results);
+        for (const record of results) {
+          sqs.send(
+            new SendMessageCommand({
+              QueueUrl: process.env.SQS_URL,
+              DelaySeconds: 10,
+              MessageBody: record
+            })
+          );
+        }
       });
   } catch (err) {
     console.error(err);
