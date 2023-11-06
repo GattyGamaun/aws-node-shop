@@ -47,6 +47,13 @@ provider:
             Fn::GetAtt:
               - catalogItemsQueue
               - Arn
+        - Effect: "Allow"
+          Action:
+            - "sns:*"
+          Resource:
+            Fn::GetAtt:
+              - ProductTopic
+              - Arn
 
 
 #        - Effect: "Allow"
@@ -65,6 +72,8 @@ provider:
     TABLE_STOCKS: stocks
     SQS_URL:
       Ref: catalogItemsQueue
+    SNS_ARN:
+      Ref: ProductTopic
 
 # you can add packaging information here
 #package:
@@ -140,6 +149,19 @@ resources:
 
 
     catalogItemsQueue:
-      Type: "AWS::SQS::Queue"
+      Type: AWS::SQS::Queue
       Properties:
-        QueueName: "catalogItemsQueue"
+        QueueName: catalogItemsQueue
+
+    ProductTopic:
+      Type: AWS::SNS::Topic
+      Properties:
+        TopicName: createProductTopic
+
+    ProductSubscription:
+      Type: AWS::SNS::Subscription
+      Properties:
+        Protocol: email
+        Endpoint: siarhei_kandratsiuk@epam.com
+        TopicArn:
+          Ref: ProductTopic
