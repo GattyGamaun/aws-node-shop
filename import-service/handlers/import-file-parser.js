@@ -23,14 +23,14 @@ export async function importFileParser(event) {
       .on('data', (data) => {
         results.push(data);
       })
-      .on('end', () => {
+      .on('end', async () => {
         for (const record of results) {
-          sqs.send(
+          await sqs.send(
             new SendMessageCommand({
               QueueUrl: process.env.SQS_URL,
               DelaySeconds: 10,
               MessageBody: record
-            })
+            }).promise()
           );
         }
       });

@@ -2,17 +2,12 @@ import { SNSClient, PublishCommand } from '@aws-sdk/client-sns';
 import { createProduct } from './create-product.js';
 
 export async function catalogBatchProcess(event) {
-  if (!event)
-    return {
-      statusCode: 400,
-      body: JSON.stringify('Records are not found')
-    };
   const client = new SNSClient({});
 
-  const products = await event.Records.map((records) => {
+  const products = event.Records.map(async (records) => {
     const body = JSON.parse(records.body);
     console.log('body', body);
-    createProduct(body);
+    await createProduct(body);
     return body;
   });
 

@@ -51,9 +51,7 @@ provider:
           Action:
             - "sns:*"
           Resource:
-            Fn::GetAtt:
-              - ProductTopic
-              - Arn
+            - arn:aws:sqs:eu-north-1:782876982008:catalogItemsQueue
 
 
 #        - Effect: "Allow"
@@ -72,8 +70,7 @@ provider:
     TABLE_STOCKS: stocks
     SQS_URL:
       Ref: catalogItemsQueue
-    SNS_ARN:
-      Ref: ProductTopic
+    SNS_ARN: arn:aws:sns:eu-north-1:782876982008:createProductTopic
 
 # you can add packaging information here
 #package:
