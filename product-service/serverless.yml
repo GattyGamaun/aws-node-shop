@@ -32,12 +32,28 @@ provider:
 
 # you can add statements to the Lambda function's IAM Role here
   iam:
-    role: arn:aws:iam::782876982008:role/DynamoDBLambdaAccessRole
-#      statements:
-#        - Effect: "Allow"
-#          Action:
-#            - "s3:ListBucket"
-#          Resource: { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "ServerlessDeploymentBucket" } ] ]  }
+    role:
+      statements:
+        - Effect: "Allow"
+          Action:
+            - "dynamodb:*"
+          Resource:
+            - arn:aws:dynamodb:eu-north-1:782876982008:table/stocks
+            - arn:aws:dynamodb:eu-north-1:782876982008:table/products
+        - Effect: Allow
+          Action:
+            - "sqs:*"
+          Resource:
+            Fn::GetAtt:
+              - catalogItemsQueue
+              - Arn
+        - Effect: "Allow"
+          Action:
+            - "sns:*"
+          Resource:
+            - arn:aws:sqs:eu-north-1:782876982008:catalogItemsQueue
+
+
 #        - Effect: "Allow"
 #          Action:
 #            - "s3:PutObject"
@@ -52,6 +68,9 @@ provider:
   environment:
     TABLE_PRODUCTS: products
     TABLE_STOCKS: stocks
+    SQS_URL:
+      Ref: catalogItemsQueue
+    SNS_ARN: arn:aws:sns:eu-north-1:782876982008:createProductTopic
 
 # you can add packaging information here
 #package:
@@ -82,6 +101,17 @@ functions:
       - httpApi:
           path: /products
           method: post
+
+  catalogBatchProcess:
+    handler: handler.catalogBatchProcess
+    events:
+      - sqs:
+          arn:
+            Fn::GetAtt:
+              - catalogItemsQueue
+              - Arn
+          batchSize: 5
+          maximumBatchingWindow: 10
 
 # you can add CloudFormation resource templates here
 resources:
@@ -115,3 +145,20 @@ resources:
           WriteCapacityUnits: 5
 
 
+    catalogItemsQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: catalogItemsQueue
+
+    ProductTopic:
+      Type: AWS::SNS::Topic
+      Properties:
+        TopicName: createProductTopic
+
+    ProductSubscription:
+      Type: AWS::SNS::Subscription
+      Properties:
+        Protocol: email
+        Endpoint: siarhei_kandratsiuk@epam.com
+        TopicArn:
+          Ref: ProductTopic
