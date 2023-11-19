@@ -52,7 +52,7 @@ aws dynamodb put-item \
 
 aws dynamodb put-item \
     --table-name stocks \
-    --item '{"product_id": {"S": "77567ec4b-b10c-48c5-9345-fc73c48a80aa"}, "count": {"N": "14"}}'
+    --item '{"product_id": {"S": "7567ec4b-b10c-48c5-9345-fc73c48a80aa"}, "count": {"N": "14"}}'
 
 aws dynamodb put-item \
     --table-name stocks \
