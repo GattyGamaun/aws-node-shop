@@ -71,6 +71,11 @@ provider:
     SQS_URL:
       Ref: catalogItemsQueue
     SNS_ARN: arn:aws:sns:eu-north-1:782876982008:createProductTopic
+    PGHOST: db-practice.cmbguihb934m.eu-north-1.rds.amazonaws.com
+    PGPORT: 5432
+    PGDATABASE: postgres
+    PGUSER: postgresadmin
+    PGPASSWORD: pM6*j0H8
 
 # you can add packaging information here
 #package:
@@ -112,6 +117,9 @@ functions:
               - Arn
           batchSize: 5
           maximumBatchingWindow: 10
+
+  getCarts:
+    handler: handler.getCarts
 
 # you can add CloudFormation resource templates here
 resources:
