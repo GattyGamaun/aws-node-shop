@@ -14,3 +14,7 @@ https://nk8ld6d0i4.execute-api.eu-north-1.amazonaws.com
 Use FE part to upload products.cvs
 
 CloudFront link https://d3ruekmwmnxhax.cloudfront.net/
+
+Check auth
+[GET](https://wh46xgusd9.execute-api.eu-north-1.amazonaws.com/import?name=products.csv)
+

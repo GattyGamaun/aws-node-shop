@@ -26,6 +26,14 @@ provider:
   region: eu-north-1
   httpApi:
     cors: true
+    authorizers:
+      basicAuthorizer:
+        type: request
+        functionArn: arn:aws:lambda:eu-north-1:782876982008:function:authorization-service-dev-basic-auth
+        identitySource:
+          - $request.header.Authorization
+        name: basicAuthorizer
+
 
   iam:
     role:
@@ -58,6 +66,8 @@ functions:
       - httpApi:
           path: /import
           method: get
+          authorizer:
+            name: basicAuthorizer
 
   importFileParser:
     handler: handler.importFileParser
