@@ -74,8 +74,6 @@ provider:
     PGHOST: db-practice.cmbguihb934m.eu-north-1.rds.amazonaws.com
     PGPORT: 5432
     PGDATABASE: postgres
-    PGUSER: postgresadmin
-    PGPASSWORD: pM6*j0H8
 
 # you can add packaging information here
 #package:
